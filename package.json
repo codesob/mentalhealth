@@ -1,0 +1,38 @@
+{
+  "name": "mental-health-website",
+  "version": "1.0.0",
+  "description": "A mental health platform for users to connect, chat, and access therapy sessions.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "axios": "^1.9.0",
+    "bcryptjs": "^3.0.2",
+    "emotion": "^11.0.0",
+    "next": "^15.3.3",
+    "next-auth": "^4.24.11",
+    "openai": "^5.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "socket.io-client": "^4.0.0",
+    "twilio": "^5.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "14.18.63",
+    "@types/react": "17.0.87",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [
+    "mental health",
+    "chat",
+    "therapy",
+    "AI",
+    "friends"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

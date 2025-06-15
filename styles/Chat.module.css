@@ -1,0 +1,263 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.chatLayout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    height: calc(100vh - 100px);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Friend List Styles */
+.friendList {
+    border-right: 1px solid #eee;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px 0 0 12px;
+    overflow-y: auto;
+}
+
+.friendItem {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.friendItem:hover {
+    background: #f0f2f5;
+}
+
+.friendItem.active {
+    background: #e7f3ff;
+}
+
+.friendAvatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.friendInfo {
+    flex: 1;
+}
+
+.friendName {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.lastMessage {
+    font-size: 14px;
+    color: #65676b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.onlineStatus {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.online {
+    background: #31a24c;
+}
+
+.offline {
+    background: #65676b;
+}
+
+/* Chat Interface Styles */
+.chatInterface {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+    border-radius: 0 12px 12px 0;
+}
+
+.chatHeader {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+    border-radius: 0 12px 0 0;
+}
+
+.chatHeaderInfo {
+    flex: 1;
+    margin-left: 16px;
+}
+
+.chatHeaderName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.chatHeaderStatus {
+    font-size: 14px;
+    color: #65676b;
+}
+
+.messagesContainer {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #fff;
+}
+
+.messageGroup {
+    margin-bottom: 20px;
+}
+
+.message {
+    max-width: 70%;
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    position: relative;
+}
+
+.sent {
+    margin-left: auto;
+    background: #0084ff;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.received {
+    background: #f0f2f5;
+    color: #1a1a1a;
+    border-bottom-left-radius: 4px;
+}
+
+.messageTime {
+    font-size: 12px;
+    color: #65676b;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.inputArea {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    background: #fff;
+    border-radius: 0 0 12px 0;
+}
+
+.inputContainer {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.messageInput {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #eee;
+    border-radius: 24px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.messageInput:focus {
+    border-color: #0084ff;
+}
+
+.sendButton {
+    background: #0084ff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.sendButton:hover {
+    background: #0073e6;
+}
+
+.sendButton:disabled {
+    background: #e4e6eb;
+    cursor: not-allowed;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #65676b;
+    text-align: center;
+    padding: 20px;
+}
+
+.emptyStateIcon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #0084ff;
+}
+
+/* Loading States */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.loadingDot {
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+    background: #0084ff;
+    border-radius: 50%;
+    animation: bounce 0.5s infinite alternate;
+}
+
+.loadingDot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loadingDot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.friend-item:hover {
+    background-color: #f5f7fa;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-8px);
+    }
+}
+
+

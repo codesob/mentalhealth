@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String   @id @default(cuid())
+    email     String   @unique
+    name      String
+    avatar    String?
+    password  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    online    Boolean  @default(false)
+
+    // Relations
+    sentMessages       Message[]        @relation("SentMessages")
+    receivedMessages   Message[]        @relation("ReceivedMessages")
+    sentFriendReqs     Friend[]         @relation("SentFriendRequests")
+    receivedFriendReqs Friend[]         @relation("ReceivedFriendRequests")
+    aiChats            AiChat[]
+    therapySessions    TherapySession[]
+}
+
+model Message {
+    id         String   @id @default(cuid())
+    content    String
+    createdAt  DateTime @default(now())
+    senderId   String
+    receiverId String
+
+    // Relations
+    sender   User @relation("SentMessages", fields: [senderId], references: [id])
+    receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
+}
+
+model Friend {
+    id         String       @id @default(cuid())
+    status     FriendStatus @default(PENDING)
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    senderId   String
+    receiverId String
+
+    // Relations
+    sender   User @relation("SentFriendRequests", fields: [senderId], references: [id])
+    receiver User @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+}
+
+model TherapySession {
+    id        String        @id @default(cuid())
+    userId    String
+    date      DateTime
+    notes     String?
+    status    SessionStatus @default(SCHEDULED)
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
+
+    // Relations
+    user User @relation(fields: [userId], references: [id])
+}
+
+model AiChat {
+    id        String   @id @default(cuid())
+    userId    String
+    messages  Json[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+}
+
+enum FriendStatus {
+    PENDING
+    ACCEPTED
+    DECLINED
+}
+
+enum SessionStatus {
+    SCHEDULED
+    COMPLETED
+    CANCELLED
+}
