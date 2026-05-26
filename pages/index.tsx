@@ -93,8 +93,8 @@ const Home = () => {
           fontWeight: 300,
           padding: '0 1rem'
         }}>
-          Connect with licensed therapists, join supportive communities, and get 24/7 AI assistance. 
-          Take the first step towards better mental wellness today.
+          AI-powered therapists available 24/7. No appointments, no waiting lists, no expensive fees.
+          Get professional mental health support instantly, completely free.
         </p>
 
         <div style={{
@@ -106,7 +106,7 @@ const Home = () => {
           padding: '0 1rem'
         }}>
           <button
-            onClick={() => router.push('/register')}
+            onClick={() => router.push('/ai-therapy')}
             style={{
               background: 'white',
               color: '#667eea',
@@ -130,10 +130,10 @@ const Home = () => {
               e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
             }}
           >
-            Start Free Today →
+            Talk to AI Therapist Now →
           </button>
           <button
-            onClick={() => router.push('/therapy')}
+            onClick={() => router.push('/mood-tracker')}
             style={{
               background: 'rgba(255, 255, 255, 0.15)',
               backdropFilter: 'blur(10px)',
@@ -157,7 +157,7 @@ const Home = () => {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            Browse Therapists
+            Track Your Mood
           </button>
         </div>
 
@@ -224,50 +224,57 @@ const Home = () => {
           }}>
             {[
               {
-                icon: '💬',
-                title: 'Anonymous Chat',
-                description: 'Connect with others who understand. Share your feelings in a safe, judgment-free space.',
-                color: '#667eea',
-                gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-              },
-              {
                 icon: '🤖',
-                title: 'AI Companion',
-                description: 'Get instant support anytime. Our AI is trained to listen and provide helpful guidance.',
-                color: '#ec4899',
-                gradient: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)'
+                title: 'AI Therapists 24/7',
+                description: 'Chat with specialized AI therapists trained in CBT, trauma care, and stress management. Available instantly, anytime.',
+                color: '#667eea',
+                gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                link: '/ai-therapy'
               },
               {
-                icon: '👨‍⚕️',
-                title: 'Professional Therapy',
-                description: 'Book sessions with licensed therapists. Video, audio, or text - whatever works for you.',
+                icon: '📊',
+                title: 'Smart Mood Tracking',
+                description: 'AI-powered mood analysis identifies patterns and triggers. Get personalized insights to improve your mental health.',
+                color: '#ec4899',
+                gradient: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                link: '/mood-tracker'
+              },
+              {
+                icon: '📝',
+                title: 'Intelligent Journal',
+                description: 'Write your thoughts and receive AI-generated insights. Track gratitude, set goals, and measure personal growth.',
                 color: '#10b981',
-                gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                link: '/ai-journal'
               },
               {
                 icon: '🎯',
-                title: 'Mood Tracking',
-                description: 'Monitor your emotional wellness. Track patterns and celebrate your progress over time.',
+                title: 'Personalized Plans',
+                description: 'AI creates custom mental wellness plans based on your mood patterns, goals, and preferences.',
                 color: '#f59e0b',
-                gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                link: '/ai-therapy'
               },
               {
-                icon: '📚',
-                title: 'Resource Library',
-                description: 'Access curated articles, videos, and exercises. Learn coping strategies and self-care techniques.',
-                color: '#6366f1',
-                gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
+                icon: '🚨',
+                title: 'Crisis Detection',
+                description: 'Advanced AI monitors for crisis indicators and immediately provides emergency resources and hotlines.',
+                color: '#ef4444',
+                gradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                link: '/ai-therapy'
               },
               {
                 icon: '🔒',
-                title: 'Complete Privacy',
-                description: 'Your data is encrypted and secure. We never share your information without permission.',
+                title: '100% Free & Private',
+                description: 'No credit cards, no subscriptions, no data selling. Your conversations are encrypted and completely confidential.',
                 color: '#8b5cf6',
-                gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
+                gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                link: null
               }
             ].map((feature, index) => (
               <div
                 key={index}
+                onClick={() => feature.link && router.push(feature.link)}
                 style={{
                   background: 'white',
                   padding: 'clamp(1.5rem, 3vw, 2.5rem)',
@@ -275,13 +282,15 @@ const Home = () => {
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
                   border: '1px solid #f1f5f9',
                   transition: 'all 300ms',
-                  cursor: 'pointer',
+                  cursor: feature.link ? 'pointer' : 'default',
                   position: 'relative',
                   overflow: 'hidden'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+                  if (feature.link) {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+                  }
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';

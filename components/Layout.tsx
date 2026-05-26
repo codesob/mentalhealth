@@ -119,18 +119,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             gap: '2rem',
             alignItems: 'center'
           }}>
-            <Link href="/chat">
+            <Link href="/ai-therapy">
               <span style={{
-                color: isActive('/chat') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/chat') ? 600 : 500,
+                color: isActive('/ai-therapy') ? '#667eea' : '#64748b',
+                fontWeight: isActive('/ai-therapy') ? 600 : 500,
                 cursor: 'pointer',
                 position: 'relative',
                 transition: 'color 200ms',
                 fontSize: '0.95rem',
                 letterSpacing: '0.01em'
               }}>
-                Chat
-                {isActive('/chat') && (
+                AI Therapy
+                {isActive('/ai-therapy') && (
                   <div style={{
                     position: 'absolute',
                     bottom: -8,
@@ -143,18 +143,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 )}
               </span>
             </Link>
-            <Link href="/therapy">
+            <Link href="/mood-tracker">
               <span style={{
-                color: isActive('/therapy') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/therapy') ? 600 : 500,
+                color: isActive('/mood-tracker') ? '#667eea' : '#64748b',
+                fontWeight: isActive('/mood-tracker') ? 600 : 500,
                 cursor: 'pointer',
                 position: 'relative',
                 transition: 'color 200ms',
                 fontSize: '0.95rem',
                 letterSpacing: '0.01em'
               }}>
-                Therapy
-                {isActive('/therapy') && (
+                Mood Tracker
+                {isActive('/mood-tracker') && (
                   <div style={{
                     position: 'absolute',
                     bottom: -8,
@@ -167,7 +167,31 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 )}
               </span>
             </Link>
-            <Link href="/login">
+            <Link href="/ai-journal">
+              <span style={{
+                color: isActive('/ai-journal') ? '#667eea' : '#64748b',
+                fontWeight: isActive('/ai-journal') ? 600 : 500,
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'color 200ms',
+                fontSize: '0.95rem',
+                letterSpacing: '0.01em'
+              }}>
+                Journal
+                {isActive('/ai-journal') && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: -8,
+                    left: 0,
+                    right: 0,
+                    height: 3,
+                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
+                    borderRadius: '2px'
+                  }} />
+                )}
+              </span>
+            </Link>
+            <Link href="/ai-therapy">
               <button style={{
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 color: '#fff',
@@ -189,7 +213,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
               }}>
-                Get Started
+                Start Free
               </button>
             </Link>
           </div>
@@ -225,31 +249,43 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             gap: '1rem',
             borderTop: '1px solid rgba(0, 0, 0, 0.1)'
           }}>
-            <Link href="/chat">
+            <Link href="/ai-therapy">
               <div onClick={() => setMobileMenuOpen(false)} style={{
                 padding: '0.75rem',
-                color: isActive('/chat') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/chat') ? 600 : 500,
+                color: isActive('/ai-therapy') ? '#667eea' : '#64748b',
+                fontWeight: isActive('/ai-therapy') ? 600 : 500,
                 cursor: 'pointer',
                 borderRadius: '8px',
-                background: isActive('/chat') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
+                background: isActive('/ai-therapy') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
               }}>
-                Chat
+                AI Therapy
               </div>
             </Link>
-            <Link href="/therapy">
+            <Link href="/mood-tracker">
               <div onClick={() => setMobileMenuOpen(false)} style={{
                 padding: '0.75rem',
-                color: isActive('/therapy') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/therapy') ? 600 : 500,
+                color: isActive('/mood-tracker') ? '#667eea' : '#64748b',
+                fontWeight: isActive('/mood-tracker') ? 600 : 500,
                 cursor: 'pointer',
                 borderRadius: '8px',
-                background: isActive('/therapy') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
+                background: isActive('/mood-tracker') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
               }}>
-                Therapy
+                Mood Tracker
               </div>
             </Link>
-            <Link href="/login">
+            <Link href="/ai-journal">
+              <div onClick={() => setMobileMenuOpen(false)} style={{
+                padding: '0.75rem',
+                color: isActive('/ai-journal') ? '#667eea' : '#64748b',
+                fontWeight: isActive('/ai-journal') ? 600 : 500,
+                cursor: 'pointer',
+                borderRadius: '8px',
+                background: isActive('/ai-journal') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
+              }}>
+                Journal
+              </div>
+            </Link>
+            <Link href="/ai-therapy">
               <button onClick={() => setMobileMenuOpen(false)} style={{
                 width: '100%',
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -262,7 +298,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 fontSize: '1rem',
                 boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
               }}>
-                Get Started
+                Start Free
               </button>
             </Link>
           </div>
