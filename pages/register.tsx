@@ -1,137 +1,142 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { FormEvent, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
-import styles from '../styles/Auth.module.css';
+import { useRouter } from 'next/router';
+import Layout from '../components/Layout';
 import userService from '../services/userService';
+import styles from '../styles/Auth.module.css';
+
+const MIN_PASSWORD_LENGTH = 8;
 
 const Register = () => {
-    const [formData, setFormData] = useState({
-        username: '',
+    const router = useRouter();
+    const [form, setForm] = useState({
+        fullName: '',
         email: '',
         password: '',
         confirmPassword: '',
-        fullName: '',
     });
     const [error, setError] = useState('');
-    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
+    const update = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+        setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
         setError('');
+
+        if (form.password.length < MIN_PASSWORD_LENGTH) {
+            setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+            return;
+        }
+        if (form.password !== form.confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+
+        setIsLoading(true);
         try {
-            if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword || !formData.fullName) {
-                setError('Please fill in all fields');
-                return;
-            }
-
-            if (formData.password !== formData.confirmPassword) {
-                setError('Passwords do not match');
-                return;
-            }
-
             await userService.register({
-                username: formData.username,
-                email: formData.email,
-                password: formData.password,
-                fullName: formData.fullName
+                fullName: form.fullName,
+                email: form.email,
+                password: form.password,
             });
             router.push('/login?registered=true');
-        } catch (err: any) {
-            setError(err?.message || 'Registration failed. Please try again.');
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className={styles.authContainer}>
-            <div className={styles.header}>
-                <h1 className={styles.title}>Create Account</h1>
-                <p className={styles.subtitle}>Join our community of mental health support</p>
+        <Layout>
+            <Head>
+                <title>Create account | MindHeal</title>
+            </Head>
+            <div className={styles.wrap}>
+                <div className={`card ${styles.panel}`}>
+                    <h1 className={styles.title}>Create your account</h1>
+                    <p className={styles.subtitle}>It only takes a minute.</p>
+
+                    {error && (
+                        <p className={styles.error} role="alert">
+                            {error}
+                        </p>
+                    )}
+
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <div className={styles.field}>
+                            <label htmlFor="fullName" className={styles.label}>
+                                Full name
+                            </label>
+                            <input
+                                id="fullName"
+                                className="input"
+                                autoComplete="name"
+                                value={form.fullName}
+                                onChange={update('fullName')}
+                                required
+                            />
+                        </div>
+                        <div className={styles.field}>
+                            <label htmlFor="email" className={styles.label}>
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                className="input"
+                                autoComplete="email"
+                                value={form.email}
+                                onChange={update('email')}
+                                required
+                            />
+                        </div>
+                        <div className={styles.field}>
+                            <label htmlFor="password" className={styles.label}>
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                className="input"
+                                autoComplete="new-password"
+                                value={form.password}
+                                onChange={update('password')}
+                                required
+                            />
+                            <span className={styles.hint}>At least {MIN_PASSWORD_LENGTH} characters.</span>
+                        </div>
+                        <div className={styles.field}>
+                            <label htmlFor="confirmPassword" className={styles.label}>
+                                Confirm password
+                            </label>
+                            <input
+                                id="confirmPassword"
+                                type="password"
+                                className="input"
+                                autoComplete="new-password"
+                                value={form.confirmPassword}
+                                onChange={update('confirmPassword')}
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className={`btn btn-primary ${styles.submit}`}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Creating account…' : 'Create account'}
+                        </button>
+                    </form>
+
+                    <p className={styles.alt}>
+                        Already have an account? <Link href="/login">Sign in</Link>
+                    </p>
+                </div>
             </div>
-
-            {error && <div className={styles.error}>{error}</div>}
-
-            <form onSubmit={handleRegister} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label htmlFor="fullName" className={styles.label}>Full Name</label>
-                    <input
-                        type="text"
-                        id="fullName"
-                        name="fullName"
-                        className={styles.input}
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter your full name"
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor="username" className={styles.label}>Username</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        className={styles.input}
-                        value={formData.username}
-                        onChange={handleChange}
-                        required
-                        placeholder="Choose a username"
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor="email" className={styles.label}>Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        className={styles.input}
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter your email"
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor="password" className={styles.label}>Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        className={styles.input}
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                        placeholder="Create a password"
-                        minLength={8}
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor="confirmPassword" className={styles.label}>Confirm Password</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        className={styles.input}
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        required
-                        placeholder="Confirm your password"
-                    />
-                </div>
-
-                <button type="submit" className={styles.button}>Create Account</button>
-            </form>
-        </div>
+        </Layout>
     );
 };
 

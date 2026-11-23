@@ -1,12 +1,16 @@
 {
-  "name": "mental-health-website",
+  "name": "mindheal",
   "version": "1.0.0",
-  "description": "A mental health platform for users to connect, chat, and access therapy sessions.",
-  "main": "index.js",
+  "private": true,
+  "description": "A mental wellbeing web app with a mood tracker, journal and messaging.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "postinstall": "prisma generate"
+  },
+  "engines": {
+    "node": ">=18.17"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
@@ -24,15 +28,8 @@
   "devDependencies": {
     "@types/node": "20.17.6",
     "@types/react": "18.3.29",
+    "prisma": "^6.9.0",
     "typescript": "5.9.3"
   },
-  "keywords": [
-    "mental health",
-    "chat",
-    "therapy",
-    "AI",
-    "friends"
-  ],
-  "author": "Your Name",
   "license": "MIT"
 }

@@ -1,145 +1,104 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { FormEvent, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
+import Layout from '../components/Layout';
 import styles from '../styles/Auth.module.css';
 
+// Only allow same-site relative redirects after sign-in.
+function safeCallbackUrl(value: string | string[] | undefined): string {
+    const url = Array.isArray(value) ? value[0] : value;
+    return url && url.startsWith('/') && !url.startsWith('//') ? url : '/';
+}
+
 const Login = () => {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-        remember: false
-    });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (router.query.registered) {
-            setSuccess('Registration successful! Please log in.');
-        }
-    }, [router.query]);
+    const justRegistered = router.query.registered === 'true';
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
-
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
         setError('');
-        setSuccess('');
         setIsLoading(true);
 
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                    remember: formData.remember
-                }),
-            });
+        const result = await signIn('credentials', { redirect: false, email, password });
 
-            if (response.ok) {
-                router.push('/');
-            } else {
-                const data = await response.json();
-                setError(data.message || 'Login failed');
-            }
-        } catch (err) {
-            setError('An error occurred. Please try again.');
-        } finally {
+        if (result?.ok) {
+            router.push(safeCallbackUrl(router.query.callbackUrl));
+        } else {
+            setError('Invalid email or password.');
             setIsLoading(false);
         }
     };
 
     return (
-        <div className={styles.authContainer}>
-            <div className={styles.header}>
-                <h1 className={styles.title}>Welcome Back</h1>
-                <p className={styles.subtitle}>Login to continue your journey</p>
+        <Layout>
+            <Head>
+                <title>Sign in | MindHeal</title>
+            </Head>
+            <div className={styles.wrap}>
+                <div className={`card ${styles.panel}`}>
+                    <h1 className={styles.title}>Sign in</h1>
+                    <p className={styles.subtitle}>Welcome back.</p>
+
+                    {justRegistered && !error && (
+                        <p className={styles.success}>Account created. You can sign in now.</p>
+                    )}
+                    {error && (
+                        <p className={styles.error} role="alert">
+                            {error}
+                        </p>
+                    )}
+
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <div className={styles.field}>
+                            <label htmlFor="email" className={styles.label}>
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                className="input"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className={styles.field}>
+                            <label htmlFor="password" className={styles.label}>
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                className="input"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className={`btn btn-primary ${styles.submit}`}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Signing in…' : 'Sign in'}
+                        </button>
+                    </form>
+
+                    <p className={styles.alt}>
+                        New here? <Link href="/register">Create an account</Link>
+                    </p>
+                </div>
             </div>
-
-            {error && <div className={styles.error}>{error}</div>}
-            {success && <div className={styles.success}>{success}</div>}
-
-            <form onSubmit={handleLogin} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label htmlFor="email" className={styles.label}>Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        className={styles.input}
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter your email"
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor="password" className={styles.label}>Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        className={styles.input}
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter your password"
-                    />
-                </div>
-
-                <div className={styles.formGroup} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <label className={styles.checkboxLabel}>
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            checked={formData.remember}
-                            onChange={handleChange}
-                        />
-                        Remember me
-                    </label>
-                    <Link href="/forgot-password" className={styles.link} style={{ marginLeft: 'auto' }}>
-                        Forgot Password?
-                    </Link>
-                </div>
-
-                <button type="submit" className={styles.button} disabled={isLoading}>
-                    {isLoading ? 'Logging in...' : 'Log In'}
-                </button>
-            </form>
-
-            <div className={styles.separator}>Or continue with</div>
-
-            <div className={styles.socialLogin}>
-                <button className={styles.socialButton} onClick={() => router.push('/api/auth/google')}>
-                    <Image src="/google.svg" alt="Google" width={20} height={20} className={styles.socialIcon} />
-                    Google
-                </button>
-                <button className={styles.socialButton} onClick={() => router.push('/api/auth/github')}>
-                    <Image src="/github.svg" alt="GitHub" width={20} height={20} className={styles.socialIcon} />
-                    GitHub
-                </button>
-            </div>
-
-            <p className={styles.switchText}>
-                Don't have an account?
-                <Link href="/register" className={styles.link}>
-                    Sign up
-                </Link>
-            </p>
-        </div>
+        </Layout>
     );
 };
 

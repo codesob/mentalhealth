@@ -1,377 +1,92 @@
+'use client';
+
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+import styles from './Layout.module.css';
+
+const NAV_LINKS = [
+  { href: '/mood-tracker', label: 'Mood tracker' },
+  { href: '/ai-journal', label: 'Journal' },
+  { href: '/ai-therapy', label: 'Assistant' },
+  { href: '/chat', label: 'Community' },
+];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const isActive = (path: string) => router.pathname === path;
+  const linkClass = (href: string) =>
+    `${styles.navLink} ${pathname === href ? styles.navLinkActive : ''}`;
+
+  const accountActions = session ? (
+    <button className="btn btn-secondary" onClick={() => signOut({ callbackUrl: '/' })}>
+      Sign out
+    </button>
+  ) : (
+    <>
+      <Link href="/login" className="btn btn-secondary">
+        Sign in
+      </Link>
+      <Link href="/register" className="btn btn-primary">
+        Create account
+      </Link>
+    </>
+  );
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
-      {/* Animated background shapes */}
-      <div style={{
-        position: 'absolute',
-        top: '-10%',
-        right: '-5%',
-        width: '40%',
-        height: '40%',
-        borderRadius: '50%',
-        background: 'rgba(255, 255, 255, 0.1)',
-        filter: 'blur(80px)',
-        animation: 'float 6s ease-in-out infinite',
-        pointerEvents: 'none'
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-10%',
-        left: '-5%',
-        width: '35%',
-        height: '35%',
-        borderRadius: '50%',
-        background: 'rgba(255, 255, 255, 0.08)',
-        filter: 'blur(80px)',
-        animation: 'float 8s ease-in-out infinite reverse',
-        pointerEvents: 'none'
-      }} />
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .mobile-menu-btn {
-            display: flex !important;
-          }
-        }
-        @media (min-width: 769px) {
-          .mobile-menu-btn {
-            display: none !important;
-          }
-          .mobile-menu {
-            display: none !important;
-          }
-        }
-      `}</style>
-
-      <nav style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        padding: '1rem 0',
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000,
-        borderBottom: '1px solid rgba(255, 255, 255, 0.3)'
-      }}>
-        <div style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '0 1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Link href="/">
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              cursor: 'pointer'
-            }}>
-              <div style={{
-                width: 36,
-                height: 36,
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.25rem',
-                fontWeight: 700,
-                color: 'white',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)'
-              }}>
-                💜
-              </div>
-              <span style={{
-                fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
-                fontWeight: 700,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                MindHeal
-              </span>
-            </div>
+    <div className={styles.shell}>
+      <header className={styles.header}>
+        <div className={`container ${styles.headerInner}`}>
+          <Link href="/" className={styles.brand}>
+            <span className={styles.mark} aria-hidden="true" />
+            MindHeal
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="desktop-nav" style={{
-            display: 'flex',
-            gap: '2rem',
-            alignItems: 'center'
-          }}>
-            <Link href="/ai-therapy">
-              <span style={{
-                color: isActive('/ai-therapy') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/ai-therapy') ? 600 : 500,
-                cursor: 'pointer',
-                position: 'relative',
-                transition: 'color 200ms',
-                fontSize: '0.95rem',
-                letterSpacing: '0.01em'
-              }}>
-                AI Therapy
-                {isActive('/ai-therapy') && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: -8,
-                    left: 0,
-                    right: 0,
-                    height: 3,
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    borderRadius: '2px'
-                  }} />
-                )}
-              </span>
-            </Link>
-            <Link href="/mood-tracker">
-              <span style={{
-                color: isActive('/mood-tracker') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/mood-tracker') ? 600 : 500,
-                cursor: 'pointer',
-                position: 'relative',
-                transition: 'color 200ms',
-                fontSize: '0.95rem',
-                letterSpacing: '0.01em'
-              }}>
-                Mood Tracker
-                {isActive('/mood-tracker') && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: -8,
-                    left: 0,
-                    right: 0,
-                    height: 3,
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    borderRadius: '2px'
-                  }} />
-                )}
-              </span>
-            </Link>
-            <Link href="/ai-journal">
-              <span style={{
-                color: isActive('/ai-journal') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/ai-journal') ? 600 : 500,
-                cursor: 'pointer',
-                position: 'relative',
-                transition: 'color 200ms',
-                fontSize: '0.95rem',
-                letterSpacing: '0.01em'
-              }}>
-                Journal
-                {isActive('/ai-journal') && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: -8,
-                    left: 0,
-                    right: 0,
-                    height: 3,
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    borderRadius: '2px'
-                  }} />
-                )}
-              </span>
-            </Link>
-            <Link href="/ai-therapy">
-              <button style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: '#fff',
-                padding: '0.625rem 1.5rem',
-                borderRadius: '10px',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-                transform: 'translateY(0)',
-                transition: 'all 200ms'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
-              }}>
-                Start Free
-              </button>
-            </Link>
-          </div>
+          <nav className={styles.nav} aria-label="Main">
+            {NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className={linkClass(link.href)}>
+                {link.label}
+              </Link>
+            ))}
+            <div className={styles.actions}>{accountActions}</div>
+          </nav>
 
-          {/* Mobile Menu Button */}
           <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              display: 'none',
-              flexDirection: 'column',
-              gap: '4px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.5rem'
-            }}
+            className={styles.menuButton}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((open) => !open)}
           >
-            <div style={{ width: 24, height: 3, background: '#667eea', borderRadius: '2px', transition: 'all 300ms' }} />
-            <div style={{ width: 24, height: 3, background: '#667eea', borderRadius: '2px', transition: 'all 300ms' }} />
-            <div style={{ width: 24, height: 3, background: '#667eea', borderRadius: '2px', transition: 'all 300ms' }} />
+            {menuOpen ? 'Close' : 'Menu'}
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="mobile-menu" style={{
-            background: 'rgba(255, 255, 255, 0.98)',
-            backdropFilter: 'blur(10px)',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            borderTop: '1px solid rgba(0, 0, 0, 0.1)'
-          }}>
-            <Link href="/ai-therapy">
-              <div onClick={() => setMobileMenuOpen(false)} style={{
-                padding: '0.75rem',
-                color: isActive('/ai-therapy') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/ai-therapy') ? 600 : 500,
-                cursor: 'pointer',
-                borderRadius: '8px',
-                background: isActive('/ai-therapy') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
-              }}>
-                AI Therapy
-              </div>
-            </Link>
-            <Link href="/mood-tracker">
-              <div onClick={() => setMobileMenuOpen(false)} style={{
-                padding: '0.75rem',
-                color: isActive('/mood-tracker') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/mood-tracker') ? 600 : 500,
-                cursor: 'pointer',
-                borderRadius: '8px',
-                background: isActive('/mood-tracker') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
-              }}>
-                Mood Tracker
-              </div>
-            </Link>
-            <Link href="/ai-journal">
-              <div onClick={() => setMobileMenuOpen(false)} style={{
-                padding: '0.75rem',
-                color: isActive('/ai-journal') ? '#667eea' : '#64748b',
-                fontWeight: isActive('/ai-journal') ? 600 : 500,
-                cursor: 'pointer',
-                borderRadius: '8px',
-                background: isActive('/ai-journal') ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
-              }}>
-                Journal
-              </div>
-            </Link>
-            <Link href="/ai-therapy">
-              <button onClick={() => setMobileMenuOpen(false)} style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: '#fff',
-                padding: '0.875rem',
-                borderRadius: '10px',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '1rem',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-              }}>
-                Start Free
-              </button>
-            </Link>
+        {menuOpen && (
+          <div id="mobile-menu" className={styles.mobileMenu} onClick={() => setMenuOpen(false)}>
+            {NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className={linkClass(link.href)}>
+                {link.label}
+              </Link>
+            ))}
+            <div className={styles.actions} style={{ margin: '0.75rem 0 0' }}>
+              {accountActions}
+            </div>
           </div>
         )}
-      </nav>
+      </header>
 
-      <main style={{
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {children}
-      </main>
+      <main className={styles.main}>{children}</main>
 
-      {/* Footer */}
-      <footer style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        padding: 'clamp(2rem, 5vw, 3rem) 0',
-        marginTop: 'clamp(2rem, 5vw, 4rem)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <div style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '0 1rem',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: 'clamp(1.5rem, 3vw, 3rem)',
-          color: 'white'
-        }}>
-          <div>
-            <h3 style={{ fontSize: 'clamp(1.125rem, 2vw, 1.25rem)', fontWeight: 600, marginBottom: '1rem' }}>
-              MindHeal
-            </h3>
-            <p style={{ opacity: 0.9, lineHeight: 1.8, fontSize: 'clamp(0.875rem, 1.5vw, 1rem)' }}>
-              Your mental health matters. Connect with caring professionals and supportive community.
-            </p>
-          </div>
-          <div>
-            <h4 style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1rem)', fontWeight: 600, marginBottom: '1rem' }}>
-              Quick Links
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: 'clamp(0.875rem, 1.5vw, 1rem)' }}>
-              <Link href="/chat"><span style={{ opacity: 0.9, cursor: 'pointer' }}>Chat</span></Link>
-              <Link href="/therapy"><span style={{ opacity: 0.9, cursor: 'pointer' }}>Find Therapist</span></Link>
-              <Link href="/about"><span style={{ opacity: 0.9, cursor: 'pointer' }}>About Us</span></Link>
-            </div>
-          </div>
-          <div>
-            <h4 style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1rem)', fontWeight: 600, marginBottom: '1rem' }}>
-              Support
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: 'clamp(0.875rem, 1.5vw, 1rem)' }}>
-              <span style={{ opacity: 0.9 }}>Crisis Hotline: 988</span>
-              <span style={{ opacity: 0.9 }}>Email: support@mindheal.com</span>
-              <span style={{ opacity: 0.9 }}>Available 24/7</span>
-            </div>
-          </div>
-        </div>
-        <div style={{
-          maxWidth: 1280,
-          margin: '2rem auto 0',
-          padding: '0 1rem',
-          paddingTop: '2rem',
-          borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-          textAlign: 'center',
-          color: 'white',
-          opacity: 0.8,
-          fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)'
-        }}>
-          <p>© 2024 MindHeal. All rights reserved. Your mental health journey starts here.</p>
+      <footer className={styles.footer}>
+        <div className={`container ${styles.footerInner}`}>
+          <span>© {new Date().getFullYear()} MindHeal</span>
+          <span>
+            MindHeal is a self-help tool and does not replace professional care. If you are in
+            immediate danger, contact your local emergency services.
+          </span>
         </div>
       </footer>
     </div>

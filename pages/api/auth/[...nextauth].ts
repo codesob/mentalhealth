@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
@@ -23,21 +23,18 @@ export const authOptions: NextAuthOptions = {
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email
+                        email: credentials.email.trim().toLowerCase()
                     }
                 });
 
-                if (!user) {
-                    throw new Error("User not found");
-                }
+                // Same message for "no such user" and "wrong password" so the
+                // login form does not reveal which emails are registered.
+                const isPasswordValid = user
+                    ? await compare(credentials.password, user.password)
+                    : false;
 
-                const isPasswordValid = await compare(
-                    credentials.password,
-                    user.password
-                );
-
-                if (!isPasswordValid) {
-                    throw new Error("Invalid password");
+                if (!user || !isPasswordValid) {
+                    throw new Error("Invalid email or password");
                 }
 
                 return {
@@ -80,4 +77,4 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 };
 
-export default authOptions;
+export default NextAuth(authOptions);

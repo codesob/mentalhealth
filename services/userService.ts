@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = '/api/users';
 
 interface UserData {
-    username: string;
+    username?: string;
     email: string;
     password: string;
     fullName?: string;

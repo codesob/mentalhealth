@@ -27,6 +27,21 @@ model User {
     receivedFriendReqs Friend[]         @relation("ReceivedFriendRequests")
     aiChats            AiChat[]
     therapySessions    TherapySession[]
+    moodEntries        MoodEntry[]
+}
+
+model MoodEntry {
+    id         String   @id @default(cuid())
+    userId     String
+    mood       String
+    intensity  Int
+    note       String?
+    activities String[]
+    createdAt  DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, createdAt])
 }
 
 model Message {
